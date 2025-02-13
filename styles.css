@@ -2,13 +2,13 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background: #f4f4f4;
+    background-image: url(assets/coding_ninjas_small_text_wallpaper.jpg);
     text-align: center;
     transition: background 0.3s, color 0.3s;
 }
 
 body.dark-theme {
-    background: #2c2c2c;
+    background-image: url(assets/coding_ninjas_dark_theme_wallpaper.jpg);
     color: white;
 }
 
@@ -17,12 +17,16 @@ header {
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    background: #fff;
+    background:radial-gradient(rgb(220, 77, 0),black);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border: #444;
+    font-size: 50px;
 }
 
 body.dark-theme header {
-    background: #444;
+    background: radial-gradient(rgb(91, 88, 86),rgb(255, 245, 245));
+    border: #ddd;
+    color: black;
 }
 
 .logo {
@@ -33,22 +37,31 @@ body.dark-theme header {
 .header-text {
     flex-grow: 1;
     text-align: center;
+    
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 3.9rem;
     font-weight: bold;
 }
 
 p {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
     font-style: italic;
 }
 
 .kanban-title {
-    font-size: 2rem;
+    font-size: 3rem;
     font-weight: bold;
     margin-top: 10px;
+    background: radial-gradient(rgb(220, 77, 0),black);
+}
+.dark-theme .kanban-title{
+    font-size: 3rem;
+    font-weight: bold;
+    margin-top: 10px;
+    background: radial-gradient(rgb(91, 88, 86),rgb(255, 245, 245));
+    color: black;
 }
 
 #theme-toggle {
@@ -66,24 +79,25 @@ p {
 
 .column {
     width: 30%;
-    background: #fff;
+    background: radial-gradient(rgb(220, 77, 0),black);
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 body.dark-theme .column {
-    background: #555;
+    background: radial-gradient(rgb(91, 88, 86),rgb(255, 245, 245));
+    color: black;
 }
 
 .task-list {
     min-height: 100px;
     padding: 10px;
-    background: #f9f9f9;
+    background-image: url(assets/coding_ninjas_small_text_wallpaper.jpg);
 }
 
 body.dark-theme .task-list {
-    background: #666;
+    background-image: url(assets/coding_ninjas_dark_theme_wallpaper.jpg);
 }
 
 .task {
@@ -91,15 +105,28 @@ body.dark-theme .task-list {
     margin-bottom: 10px;
     border-radius: 5px;
     cursor: grab;
+    color: gray;
 }
 
 .priority-high { background: #ff6b6b; }
 .priority-medium { background: #feca57; }
 .priority-low { background: #1dd1a1; }
 
-#todo .task { background: red; }
-#inprogress .task { background: yellow; color:black}
-#done .task { background: green; }
+#todo .task { background: rgb(254, 36, 36); }
+#inprogress .task { background: rgb(255, 255, 55)}
+#done .task { background: rgb(59, 246, 59); }
+
+.dark-theme #todo .task {
+    background-color: #ec5454; /* Dark Blue */
+}
+
+.dark-theme #inprogress .task {
+    background-color: #f5ed53; /* Purple */
+}
+
+.dark-theme #done .task {
+    background-color: #4bf662; /* Dark Orange */
+}
 
 #progress-container {
     width: 100%;
