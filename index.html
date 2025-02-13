@@ -5,32 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kanban Board</title>
     <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
 </head>
 <body>
-    <div class="header">
-        <h1>Kanban Board</h1>
-        <button onclick="toggleTheme()">Toggle Theme</button>
-    </div>
+    <header>
+        <img src="logo.webp" alt="Coding Ninjas Logo" class="logo">
+        <div class="header-text">
+            <h1>Coding Ninjas</h1>
+            <p><em>Your onestop destination to Code, Create & Connect</em></p>
+        </div>
+        <button id="theme-toggle" onclick="toggleTheme()">🌞</button>
+    </header>
+    
+    <h2 class="kanban-title">Kanban Board</h2>
+    
     <div class="kanban-container">
-        <div class="column" id="todo">
+        <div class="column" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>To-Do</h2>
-            <div class="task-list" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="task-list"></div>
             <button onclick="addTask('todo')">+ Add Task</button>
         </div>
-        <div class="column" id="inprogress">
+        <div class="column" id="inprogress" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>In Progress</h2>
-            <div class="task-list" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="task-list"></div>
             <button onclick="addTask('inprogress')">+ Add Task</button>
         </div>
-        <div class="column" id="done">
+        <div class="column" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Done</h2>
-            <div class="task-list" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="task-list"></div>
             <button onclick="addTask('done')">+ Add Task</button>
         </div>
     </div>
-    <button onclick="exportTasks()">Export Board</button>
-    <input type="file" id="importFile" onchange="importTasks(event)">
-    <script src="script.js"></script>
+    
+    <div class="progress-container">
+        <h3>Progress</h3>
+        <div class="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+    
+    <div class="bottom-controls">
+        <button onclick="importTasks()">Import</button>
+        <button onclick="exportTasks()">Export</button>
+    </div>
 </body>
 </html>
-

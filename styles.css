@@ -3,6 +3,59 @@ body {
     margin: 0;
     padding: 20px;
     background: #f4f4f4;
+    text-align: center;
+    transition: background 0.3s, color 0.3s;
+}
+
+body.dark-theme {
+    background: #2c2c2c;
+    color: white;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-theme header {
+    background: #444;
+}
+
+.logo {
+    height: 180px;
+    width: auto;
+}
+
+.header-text {
+    flex-grow: 1;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+p {
+    font-size: 1.3rem;
+    font-style: italic;
+}
+
+.kanban-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.8rem;
 }
 
 .kanban-container {
@@ -19,10 +72,18 @@ body {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
+body.dark-theme .column {
+    background: #555;
+}
+
 .task-list {
     min-height: 100px;
     padding: 10px;
     background: #f9f9f9;
+}
+
+body.dark-theme .task-list {
+    background: #666;
 }
 
 .task {
@@ -37,7 +98,7 @@ body {
 .priority-low { background: #1dd1a1; }
 
 #todo .task { background: red; }
-#inprogress .task { background: yellow; }
+#inprogress .task { background: yellow; color:black}
 #done .task { background: green; }
 
 .progress-container {
@@ -55,4 +116,11 @@ body {
     height: 20px;
     background: #4caf50;
     width: 0;
+}
+
+.bottom-controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
