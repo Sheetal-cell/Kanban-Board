@@ -21,14 +21,14 @@ function drop(event) {
 function addTask(columnId) {
     let title = prompt("Enter task title:");
     let description = prompt("Enter task description:");
-    let priority = prompt("Set priority (high, medium, low):");
+    
     let dueDate = prompt("Set due date (YYYY-MM-DD):");
     let assignedTo = prompt("Assign task to:");
     
     if (title) {
         let taskId = "task-" + Math.random().toString(36).substr(2, 9);
         let task = document.createElement("div");
-        task.className = `task priority-${priority}`;
+        
         task.innerHTML = `<strong>${title}</strong>
             <p>${description}</p>
             <p>Due: <span class="due-date">${dueDate || "N/A"}</span></p>
@@ -71,6 +71,14 @@ function addComment(taskId) {
         commentDiv.textContent = comment;
         document.getElementById("comments-" + taskId).appendChild(commentDiv);
         saveTasks();
+    }
+}
+function deleteTask(button) {
+    if (confirm("Are you sure you want to delete this task?")) {
+        button.parentElement.remove();
+        saveTasks();
+        updateProgress();
+        updateLeaderboard();
     }
 }
 

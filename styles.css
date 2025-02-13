@@ -83,6 +83,7 @@ p {
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    color: black;
 }
 
 body.dark-theme .column {
@@ -93,38 +94,36 @@ body.dark-theme .column {
 .task-list {
     min-height: 100px;
     padding: 10px;
-    background-image: url(assets/coding_ninjas_small_text_wallpaper.jpg);
+   
+    
+    
 }
 
-body.dark-theme .task-list {
-    background-image: url(assets/coding_ninjas_dark_theme_wallpaper.jpg);
-}
+
 
 .task {
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
     cursor: grab;
-    color: gray;
+    color: rgb(0, 0, 0);
 }
 
-.priority-high { background: #ff6b6b; }
-.priority-medium { background: #feca57; }
-.priority-low { background: #1dd1a1; }
 
-#todo .task { background: rgb(254, 36, 36); }
-#inprogress .task { background: rgb(255, 255, 55)}
-#done .task { background: rgb(59, 246, 59); }
 
-.dark-theme #todo .task {
+#todo .task-list { background: rgb(254, 36, 36); }
+#inprogress .task-list { background: rgb(255, 255, 55)}
+#done .task-list { background: rgb(59, 246, 59); }
+
+.dark-theme #todo .task-list {
     background-color: #ec5454; /* Dark Blue */
 }
 
-.dark-theme #inprogress .task {
+.dark-theme #inprogress .task-list {
     background-color: #f5ed53; /* Purple */
 }
 
-.dark-theme #done .task {
+.dark-theme #done .task-list {
     background-color: #4bf662; /* Dark Orange */
 }
 
