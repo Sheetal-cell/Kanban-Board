@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Kanban Board</title>
+    <title>10X Coding Ninjas Kanban Board</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="logo.webp" type="image/png">
 </head>
-<body>
-    <button class="theme-toggle" onclick="toggleTheme()">🌙 Toggle Theme</button>
-    <h1>Kanban Board</h1>
+<body class="coding-ninjas-theme">
+    <header>
+        <img src="logo.webp" alt="10X Coding Ninjas" class="logo">
+        <h1>Kanban Board</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙 Toggle Theme</button>
+    </header>
+    
     <div class="board">
         <div class="column" id="todo">
             <h2>To-Do</h2>
