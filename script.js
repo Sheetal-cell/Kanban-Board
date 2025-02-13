@@ -152,6 +152,13 @@ function importTasks() {
     };
     input.click();
 }
+function updateProgress() {
+    let totalTasks = document.querySelectorAll(".task").length;
+    let completedTasks = document.querySelectorAll("#done .task").length;
+    let progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+    document.getElementById("progress-bar").style.width = progressPercentage + "%";
+    document.getElementById("progress-bar").textContent = Math.round(progressPercentage) + "%";
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     loadTasks();
