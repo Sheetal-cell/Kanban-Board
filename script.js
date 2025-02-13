@@ -1,5 +1,3 @@
-document.addEventListener("DOMContentLoaded", loadTasks);
-
 function allowDrop(event) {
     event.preventDefault();
 }
@@ -8,185 +6,161 @@ function drag(event) {
     event.dataTransfer.setData("text", event.target.id);
 }
 
-function drop(event, column) {
+function drop(event) {
     event.preventDefault();
-    let taskId = event.dataTransfer.getData("text");
-    let task = document.getElementById(taskId);
+    let data = event.dataTransfer.getData("text");
+    let task = document.getElementById(data);
+    event.target.appendChild(task);
+    applyTaskColor(task, event.target.closest(".column").id);
+    saveTasks();
+    checkDueDates();
+}
+
+function addTask(columnId) {
+    let title = prompt("Enter task title:");
+    let description = prompt("Enter task description:");
+    let priority = prompt("Set priority (high, medium, low):");
+    let dueDate = prompt("Set due date (YYYY-MM-DD):") || "N/A";
+    let assignedTo = prompt("Assign task to:") || "Unassigned";
     
-    document.querySelector(`#${column} .task-list`).appendChild(task);
-    updateTaskColumn(taskId, column);
+    if (title) {
+        let task = document.createElement("div");
+        task.className = `task priority-${priority}`;
+        task.innerHTML = `<strong>${title}</strong>
+            <p>${description}</p>
+            <p>Due: <span class="due-date">${dueDate}</span></p>
+            <p>Assigned to: ${assignedTo}</p>
+            <label>Priority: 
+                <select onchange="updatePriority(this)">
+                    <option value="high" ${priority === "high" ? "selected" : ""}>High</option>
+                    <option value="medium" ${priority === "medium" ? "selected" : ""}>Medium</option>
+                    <option value="low" ${priority === "low" ? "selected" : ""}>Low</option>
+                </select>
+            </label>
+            <button onclick="addComment(this)">💬</button>
+            <button onclick="editTask(this)">✏️</button>
+            <button onclick="deleteTask(this)">❌</button>`;
+        task.setAttribute("draggable", true);
+        task.setAttribute("id", "task-" + Math.random().toString(36).substr(2, 9));
+        task.ondragstart = drag;
+        document.getElementById(columnId).querySelector(".task-list").appendChild(task);
+        applyTaskColor(task, columnId);
+        saveTasks();
+        updateProgress();
+        checkDueDates();
+    }
+}
+
+function applyTaskColor(task, columnId) {
+    task.style.backgroundColor = columnId === "todo" ? "red" :
+                                 columnId === "inprogress" ? "yellow" :
+                                 columnId === "done" ? "green" : "white";
+}
+
+function editTask(button) {
+    let task = button.parentElement;
+    let newTitle = prompt("Edit task title:", task.querySelector("strong").textContent);
+    let newDescription = prompt("Edit task description:", task.querySelector("p").textContent);
+    if (newTitle) task.querySelector("strong").textContent = newTitle;
+    if (newDescription) task.querySelector("p").textContent = newDescription;
     saveTasks();
 }
 
-// Open and Close Task Modal
-function openTaskModal(column) {
-    document.getElementById("taskModal").style.display = "block";
-    document.getElementById("taskModal").dataset.column = column;
+function deleteTask(button) {
+    button.parentElement.remove();
+    saveTasks();
+    updateProgress();
 }
 
-function closeTaskModal() {
-    document.getElementById("taskModal").style.display = "none";
-}
-
-// Add a New Task
-function addTask() {
-    let column = document.getElementById("taskModal").dataset.column;
-    let taskTitle = document.getElementById("taskTitle").value;
-    let taskDeadline = document.getElementById("taskDeadline").value;
-    let taskPriority = document.getElementById("taskPriority").value;
-
-    if (taskTitle.trim() === "") {
-        alert("Task title cannot be empty!");
-        return;
-    }
-
-    let taskId = `task-${Date.now()}`;
-    let isOverdue = new Date(taskDeadline) < new Date();
-    
-    let taskData = {
-        id: taskId,
-        title: taskTitle,
-        deadline: taskDeadline,
-        priority: taskPriority,
-        column: column,
-        overdue: isOverdue
-    };
-
-    let taskElement = createTaskElement(taskData);
-    document.querySelector(`#${column} .task-list`).appendChild(taskElement);
-    
-    saveTaskToLocal(taskData);
-    closeTaskModal();
-}
-
-// Create Task Element
-function createTaskElement(task) {
-    let taskElement = document.createElement("div");
-    taskElement.className = `task ${task.priority}-priority`;
-    if (task.overdue) taskElement.classList.add("overdue");
-    
-    taskElement.id = task.id;
-    taskElement.draggable = true;
-    taskElement.ondragstart = drag;
-    taskElement.ondblclick = () => editTask(taskElement);
-
-    taskElement.innerHTML = `
-        <p>${task.title} (Due: ${task.deadline})</p>
-        <button onclick="deleteTask('${task.id}')">❌</button>
-    `;
-
-    return taskElement;
-}
-
-// Edit Task
-function editTask(taskElement) {
-    let newTitle = prompt("Edit Task:", taskElement.innerText.replace("❌", "").trim());
-    if (newTitle) {
-        taskElement.querySelector("p").innerText = newTitle;
-        updateTaskTitle(taskElement.id, newTitle);
+function addComment(button) {
+    let comment = prompt("Enter your comment:");
+    if (comment) {
+        let task = button.parentElement;
+        let comments = task.querySelector(".comments");
+        if (!comments) {
+            comments = document.createElement("div");
+            comments.className = "comments";
+            task.appendChild(comments);
+        }
+        let commentNode = document.createElement("p");
+        commentNode.textContent = comment;
+        comments.appendChild(commentNode);
         saveTasks();
     }
 }
 
-// Delete Task
-function deleteTask(taskId) {
-    document.getElementById(taskId).remove();
-    removeTaskFromLocal(taskId);
+function updatePriority(selectElement) {
+    let task = selectElement.closest(".task");
+    let priority = selectElement.value;
+    task.className = `task priority-${priority}`;
     saveTasks();
 }
 
-// Update Task Column after Drag
-function updateTaskColumn(taskId, column) {
-    let tasks = JSON.parse(localStorage.getItem("kanbanTasks")) || { todo: [], "in-progress": [], done: [] };
-    
-    for (let key in tasks) {
-        tasks[key] = tasks[key].filter(task => task.id !== taskId);
-    }
-    
-    let movedTask = document.getElementById(taskId);
-    let newTaskData = {
-        id: taskId,
-        title: movedTask.querySelector("p").innerText.split(" (Due: ")[0],
-        deadline: movedTask.querySelector("p").innerText.match(/\d{4}-\d{2}-\d{2}/)[0],
-        priority: movedTask.classList.contains("high-priority") ? "high" : 
-                  movedTask.classList.contains("medium-priority") ? "medium" : "low",
-        column: column,
-        overdue: movedTask.classList.contains("overdue")
-    };
-
-    tasks[column].push(newTaskData);
-    localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
+function checkDueDates() {
+    let currentDate = new Date().toISOString().split("T")[0];
+    document.querySelectorAll(".task").forEach(task => {
+        let dueDateElement = task.querySelector(".due-date");
+        let dueDate = dueDateElement.textContent.trim();
+        let columnId = task.parentElement.parentElement.id;
+        
+        if (dueDate !== "N/A" && dueDate < currentDate && (columnId === "todo" || columnId === "inprogress")) {
+            dueDateElement.style.color = "red";
+            dueDateElement.textContent = `${dueDate} (FAILED)`;
+        }
+    });
 }
 
-// Save Task to Local Storage
-function saveTaskToLocal(task) {
-    let tasks = JSON.parse(localStorage.getItem("kanbanTasks")) || { todo: [], "in-progress": [], done: [] };
-    tasks[task.column].push(task);
-    localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
-}
-
-// Save All Tasks (for Editing)
 function saveTasks() {
-    let tasks = { todo: [], "in-progress": [], done: [] };
-
-    document.querySelectorAll(".column").forEach(column => {
-        let columnId = column.id;
-        column.querySelectorAll(".task").forEach(task => {
-            tasks[columnId].push({
-                id: task.id,
-                title: task.querySelector("p").innerText.split(" (Due: ")[0],
-                deadline: task.querySelector("p").innerText.match(/\d{4}-\d{2}-\d{2}/)[0],
-                priority: task.classList.contains("high-priority") ? "high" :
-                          task.classList.contains("medium-priority") ? "medium" : "low",
-                column: columnId,
-                overdue: task.classList.contains("overdue")
-            });
+    let tasks = [];
+    document.querySelectorAll(".task").forEach(task => {
+        tasks.push({
+            id: task.id,
+            title: task.querySelector("strong").textContent,
+            description: task.querySelector("p").textContent,
+            dueDate: task.querySelector(".due-date").textContent,
+            column: task.parentElement.parentElement.id,
+            priority: task.classList.contains("priority-high") ? "high" :
+                      task.classList.contains("priority-medium") ? "medium" : "low"
         });
     });
-
     localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
 }
 
-// Load Tasks from Local Storage
 function loadTasks() {
-    let tasks = JSON.parse(localStorage.getItem("kanbanTasks")) || { todo: [], "in-progress": [], done: [] };
-
-    Object.keys(tasks).forEach(column => {
-        tasks[column].forEach(task => {
-            let taskElement = createTaskElement(task);
-            document.querySelector(`#${column} .task-list`).appendChild(taskElement);
-        });
+    let tasks = JSON.parse(localStorage.getItem("kanbanTasks")) || [];
+    tasks.forEach(taskData => {
+        let task = document.createElement("div");
+        task.className = `task priority-${taskData.priority}`;
+        task.innerHTML = `<strong>${taskData.title}</strong>
+            <p>${taskData.description}</p>
+            <p>Due: <span class="due-date">${taskData.dueDate ? taskData.dueDate : "N/A"}</span></p>
+            <label>Priority: 
+                <select onchange="updatePriority(this)">
+                    <option value="high" ${taskData.priority === "high" ? "selected" : ""}>High</option>
+                    <option value="medium" ${taskData.priority === "medium" ? "selected" : ""}>Medium</option>
+                    <option value="low" ${taskData.priority === "low" ? "selected" : ""}>Low</option>
+                </select>
+            </label>
+            <button onclick="editTask(this)">✏️</button>
+            <button onclick="deleteTask(this)">❌</button>`;
+        task.setAttribute("draggable", true);
+        task.setAttribute("id", taskData.id);
+        task.ondragstart = drag;
+        let column = document.getElementById(taskData.column);
+        column.querySelector(".task-list").appendChild(task);
+        applyTaskColor(task, taskData.column);
     });
+    checkDueDates();
 }
 
-// Remove Task from Local Storage
-function removeTaskFromLocal(taskId) {
-    let tasks = JSON.parse(localStorage.getItem("kanbanTasks")) || { todo: [], "in-progress": [], done: [] };
-
-    for (let key in tasks) {
-        tasks[key] = tasks[key].filter(task => task.id !== taskId);
-    }
-
-    localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
+function updateProgress() {
+    let totalTasks = document.querySelectorAll(".task").length;
+    let doneTasks = document.querySelectorAll("#done .task").length;
+    let progress = totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
+    document.getElementById("progress-bar").style.width = progress + "%";
 }
 
-// Update Task Title in Local Storage
-function updateTaskTitle(taskId, newTitle) {
-    let tasks = JSON.parse(localStorage.getItem("kanbanTasks")) || { todo: [], "in-progress": [], done: [] };
-
-    for (let key in tasks) {
-        tasks[key].forEach(task => {
-            if (task.id === taskId) {
-                task.title = newTitle;
-            }
-        });
-    }
-
-    localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
-}
-
-// Dark Mode Toggle
-function toggleTheme() {
-    document.body.classList.toggle("dark-mode");
-}
-
+document.addEventListener("DOMContentLoaded", () => {
+    loadTasks();
+    updateProgress();
+});
