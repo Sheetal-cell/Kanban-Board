@@ -85,23 +85,20 @@ function deleteTask(button) {
 function saveTasks() {
     let tasks = [];
     document.querySelectorAll(".task").forEach(task => {
-        let comments = [];
-        task.querySelectorAll(".comments p").forEach(comment => comments.push(comment.textContent));
         tasks.push({
             id: task.id,
             title: task.querySelector("strong").textContent,
             description: task.querySelector("p").textContent,
             dueDate: task.querySelector(".due-date").textContent,
-            assignedTo: task.querySelector(".assigned-to").value,
-            column: task.parentElement.parentElement.id,
-            comments: comments
+            column: task.parentElement.parentElement.id
         });
     });
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
 }
 
+
 function loadTasks() {
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let tasks = JSON.parse(localStorage.getItem("kanbanTasks")) || [];
     tasks.forEach(taskData => {
         let task = document.createElement("div");
         task.className = "task";
