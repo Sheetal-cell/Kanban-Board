@@ -1,3 +1,23 @@
+console.log("Script Loaded!");
+
+window.saveTasks = function () {
+    let tasks = [];
+    document.querySelectorAll(".task").forEach(task => {
+        tasks.push({
+            id: task.id,
+            title: task.querySelector("strong").textContent,
+            description: task.querySelector("p").textContent,
+            dueDate: task.querySelector(".due-date").textContent,
+            column: task.closest(".column").id
+        });
+    });
+
+    console.log("Saving tasks:", tasks);
+    localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
+};
+
+console.log("Script Loaded!");
+
 function allowDrop(event) {
     event.preventDefault();
 }
@@ -71,6 +91,7 @@ function addComment(taskId) {
         commentDiv.textContent = comment;
         document.getElementById("comments-" + taskId).appendChild(commentDiv);
         saveTasks();
+
     }
 }
 function deleteTask(button) {
@@ -79,26 +100,36 @@ function deleteTask(button) {
         saveTasks();
         updateProgress();
         updateLeaderboard();
+        saveTasks();
     }
 }
 
-function saveTasks() {
+window.saveTasks = function () {
     let tasks = [];
     document.querySelectorAll(".task").forEach(task => {
+        let comments = [];
+        task.querySelectorAll(".comments p").forEach(comment => comments.push(comment.textContent));
+
         tasks.push({
             id: task.id,
             title: task.querySelector("strong").textContent,
             description: task.querySelector("p").textContent,
             dueDate: task.querySelector(".due-date").textContent,
-            column: task.parentElement.parentElement.id
+            assignedTo: task.querySelector(".assigned-to") ? task.querySelector(".assigned-to").value : "",
+            column: task.closest(".column") ? task.closest(".column").id : "",
+            comments: comments
         });
     });
+
+    console.log("Saving tasks:", tasks); // ✅ Debugging
     localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
-}
+};
 
 
 function loadTasks() {
     let tasks = JSON.parse(localStorage.getItem("kanbanTasks")) || [];
+    console.log("Loaded tasks:", tasks); // ✅ Debugging
+
     tasks.forEach(taskData => {
         let task = document.createElement("div");
         task.className = "task";
@@ -106,20 +137,26 @@ function loadTasks() {
             <p>${taskData.description}</p>
             <p>Due: <span class="due-date">${taskData.dueDate}</span></p>
             <label>Assigned to: 
-                <select class="assigned-to" onchange="updateLeaderboard()">
+                <select class="assigned-to" onchange="saveTasks()">
                     <option value="Worker 1" ${taskData.assignedTo === "Worker 1" ? "selected" : ""}>Worker 1</option>
                     <option value="Worker 2" ${taskData.assignedTo === "Worker 2" ? "selected" : ""}>Worker 2</option>
                     <option value="Worker 3" ${taskData.assignedTo === "Worker 3" ? "selected" : ""}>Worker 3</option>
                 </select>
             </label>
-            <button onclick="addComment('${taskData.id}')">💬</button>
-            <button onclick="editTask(this)">✏️</button>
             <button onclick="deleteTask(this)">❌</button>
             <div class="comments" id="comments-${taskData.id}"></div>`;
+
         task.setAttribute("draggable", true);
         task.setAttribute("id", taskData.id);
         task.ondragstart = drag;
-        document.getElementById(taskData.column).querySelector(".task-list").appendChild(task);
+
+        let column = document.getElementById(taskData.column);
+        if (column) {
+            column.querySelector(".task-list").appendChild(task);
+        } else {
+            console.warn(`Column ${taskData.column} not found!`);
+        }
+
         taskData.comments.forEach(comment => {
             let commentDiv = document.createElement("p");
             commentDiv.textContent = comment;
@@ -127,6 +164,9 @@ function loadTasks() {
         });
     });
 }
+
+
+
 function toggleTheme() {
     document.body.classList.toggle("dark-theme");
     let theme = document.body.classList.contains("dark-theme") ? "dark" : "light";
@@ -166,6 +206,8 @@ function updateProgress() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("Page loaded. Loading tasks...");
     loadTasks();
     updateProgress();
     updateLeaderboard();
