@@ -34,11 +34,83 @@ body.dark-theme header {
     width: auto;
 }
 
-.header-text {
+.heading-text {
     flex-grow: 1;
     text-align: center;
     
 }
+/* ===== Header Layout ===== */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 20px;
+    gap: 15px;
+  }
+  
+  .logo {
+    height: 50px;
+    width: auto;
+  }
+  
+  .heading-text h1,
+  .heading-text h2 {
+    margin: 0;
+    color: #222;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* ===== Tablet Screens (≤ 1024px) ===== */
+  @media screen and (max-width: 1024px) {
+    .logo {
+      height: 45px;
+    }
+  
+    .heading-text h1 {
+      font-size: 1.6rem;
+    }
+  
+    .heading-text h2 {
+      font-size: 1.2rem;
+    }
+  }
+  
+  /* ===== Mobile Screens (≤ 768px) ===== */
+  @media screen and (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  
+    .logo {
+      height: 40px;
+    }
+  
+    .heading-text h1 {
+      font-size: 1.4rem;
+    }
+  
+    .heading-text h2 {
+      font-size: 1.1rem;
+    }
+  }
+  
+  /* ===== Extra Small Screens (≤ 480px) ===== */
+  @media screen and (max-width: 480px) {
+    .logo {
+      height: 35px;
+    }
+  
+    .heading-text h1 {
+      font-size: 1.2rem;
+    }
+  
+    .heading-text h2 {
+      font-size: 1rem;
+    }
+  }
+  
 
 h1 {
     font-size: 3.9rem;
@@ -156,3 +228,62 @@ body.dark-theme .column {
     justify-content: center;
     gap: 20px;
 }
+/* Default styles (for larger screens) */
+
+/* Responsive Design - Adjusting for Tablets */
+@media screen and (max-width: 1024px) {
+    .kanban-board {
+        display: flex;
+        flex-direction: column; /* Stack columns on smaller screens */
+        align-items: center;
+    }
+    .kanban-column {
+        width: 80%; /* Reduce column width */
+        margin-bottom: 20px;
+    }
+    .task-card {
+        font-size: 14px; /* Adjust text size */
+    }
+}
+
+/* Responsive Design - Adjusting for Mobile Devices */
+@media screen and (max-width: 768px) {
+    .kanban-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .kanban-board {
+        width: 100%;
+        padding: 10px;
+    }
+    .kanban-column {
+        width: 90%;
+    }
+    .task-card {
+        font-size: 10px; /* Further reduce font size */
+        padding: 10px;
+    }
+    .add-task-button {
+        width: 100%; /* Make button full-width */
+    }
+}
+
+/* Responsive Design - Extra Small Devices */
+@media screen and (max-width: 480px) {
+    .kanban-column {
+        width: 100%; /* Take full width */
+        margin-bottom: 15px;
+    }
+    .task-card {
+        font-size: 9px;
+        padding: 8px;
+    }
+    .add-task-form input,
+    .add-task-form button {
+        font-size: 10px; /* Adjust input and button sizes */
+    }
+}
+
+
+
+
