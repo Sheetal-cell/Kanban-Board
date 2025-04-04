@@ -2,13 +2,13 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-image: url(assets/coding_ninjas_small_text_wallpaper.jpg);
+    background-image: url(assets/Innoverse\ logo\ light.jpg);
     text-align: center;
     transition: background 0.3s, color 0.3s;
 }
 
 body.dark-theme {
-    background-image: url(assets/coding_ninjas_dark_theme_wallpaper.jpg);
+    background-image: url(assets/Innoverse\ logo\ dark.jpg);
     color: white;
 }
 
@@ -17,7 +17,7 @@ header {
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    background:radial-gradient(rgb(220, 77, 0),black);
+    background:radial-gradient(rgb(255, 163, 113),black);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     border: #444;
     font-size: 50px;
@@ -54,7 +54,7 @@ p {
     font-size: 3rem;
     font-weight: bold;
     margin-top: 10px;
-    background: radial-gradient(rgb(220, 77, 0),black);
+    background: radial-gradient(rgb(255, 156, 103),black);
 }
 .dark-theme .kanban-title{
     font-size: 3rem;
@@ -79,7 +79,7 @@ p {
 
 .column {
     width: 30%;
-    background: radial-gradient(rgb(220, 77, 0),black);
+    background: radial-gradient(rgb(255, 151, 95),black);
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
